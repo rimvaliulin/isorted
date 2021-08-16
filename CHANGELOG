@@ -1,0 +1,21 @@
+     __
+    / /               __           __
+   / /________  _____/ /____  ____/ /
+  / / ___/ __ \/ ___/ __/ _ \/ __  /
+ / /__  / /_/ / /  / /_/  __/ /_/ /
+/_/____/\____/_/   \__/\___/\__,_/
+
+
+Installation
+-------------
+
+Install isort. Minimal version : 19.3b
+
+	pip3 install isort # Requires python 3.6
+
+
+Changelog
+---------
+
+1.0.0:
+	- make plugin
