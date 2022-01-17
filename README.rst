@@ -33,7 +33,7 @@ Installation
 
   pip3 install isort # Requires python 3.6
 
-#. In PackageControl just find ``isort``, and that's it!
+#. In PackageControl just find ``isort`` (NOT IN PACKAGE CONTROL YET!)
 
 or
 
