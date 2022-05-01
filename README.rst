@@ -1,5 +1,5 @@
 =======
-Isorted
+isorted
 =======
 
 `isort`_ integration for Sublime Text
@@ -11,7 +11,7 @@ Isorted
 
        __
       / /               __           __
-     / /________  _____/ /____  ____/ /
+     ---________  _____/ /____  ____/ /
     / / ___/ __ \/ ___/ __/ _ \/ __  /
    / /__  / /_/ / /  / /_/  __/ /_/ /
   /_/____/\____/_/   \__/\___/\__,_/
@@ -49,7 +49,7 @@ Usage
 
 * Run isort on the current file:
     Press `Ctrl-Alt-S` (Mac: `Cmd-Alt-S`) to sort importd in the entire file.
-    You can also `Ctrl-Shift-P` (Mac: `Cmd-Shift-P`) and select `Isorted: Format file`.
+    You can also `Ctrl-Shift-P` (Mac: `Cmd-Shift-P`) and select `isorted: Format file`.
 
 
 Settings
@@ -65,10 +65,10 @@ See: https://pycqa.github.io/isort/docs/configuration/config_files.html
 
 Global settings
 ***************
-Preferences -> Package Settings -> Isorted -> settings :
+Preferences -> Package Settings -> isorted -> settings :
 
 
-Isorted specifics options
+isorted specifics options
 +++++++++++++++++++++++++
 
 * isort_command:
@@ -142,6 +142,6 @@ Contributions by:
 Todo
 ----
 
-- ...
+- Fix error 'You may need to install isort and/or configure 'isort_command' in isorted's settings.' on new Sublime Text startup after reboot (needs Sublime Text restart).
 
 .. _isort : https://github.com/PyCQA/isort

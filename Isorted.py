@@ -1,4 +1,4 @@
-"""Isorted plugin."""
+"""isorted plugin."""
 import os
 import re
 import subprocess
@@ -9,11 +9,11 @@ import sublime_plugin
 encoding_re = re.compile(r"^[ \t\v]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)")
 
 
-def get_setting(self, setting):
+def get_setting(self, name):
     """Get plugin settings."""
-    defaults = sublime.load_settings("Isorted.sublime-settings")
-    settings = self.view.settings()
-    return settings.get(f"Isorted.{setting}", defaults.get(setting))
+    defaults = sublime.load_settings("isorted.sublime-settings")
+    settings = self.view.settings().to_dict()
+    return settings.get(f"isorted.{name}", settings.get("isorted", {}).get(name, defaults.get(name)))
 
 
 class IsortFileCommand(sublime_plugin.TextCommand):
@@ -79,7 +79,6 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         """Run plugin."""
         current_positions = list(self.view.sel())
         this_contents = self.view.substr(sublime.Region(0, self.view.size()))
-        # settings = self.get_settings()
         cmd = self.get_command_line()
         encoding = self.get_encoding()
         try:
@@ -93,7 +92,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             )
             out, err = p.communicate(input=this_contents.encode(encoding))
         except (UnboundLocalError, OSError) as e:
-            msg = "You may need to install isort and/or configure 'isort_command' in Isorted's settings."
+            msg = "You may need to install isort and/or configure 'isort_command' in isorted's settings."
             sublime.error_message("%s: %s\n\n%s" % (e.__class__.__name__, e, msg))
             raise Exception(msg)
 
@@ -107,10 +106,10 @@ class IsortFileCommand(sublime_plugin.TextCommand):
 
 
 class IsortedOnSave(sublime_plugin.ViewEventListener):
-    """Isorted listener class."""
+    """isorted listener class."""
 
     def on_pre_save(self):
         """File on save callback."""
         isort_on_save = get_setting(self, "isort_on_save")
-        if isort_on_save or isort_on_save is None:
+        if isort_on_save:
             self.view.run_command("isort_file")
