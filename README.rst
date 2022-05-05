@@ -16,6 +16,9 @@ isorted
    / /__  / /_/ / /  / /_/  __/ /_/ /
   /_/____/\____/_/   \__/\___/\__,_/
 
+.. image:: https://raw.githubusercontent.com/rimvaliulin/isorted/main/isort_logo.png
+  :alt: isort - isort your imports, so you don't have to.
+  :target: https://pycqa.github.io/isort/
 
 
 Table Of content
