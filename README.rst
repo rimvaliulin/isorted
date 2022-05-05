@@ -21,7 +21,7 @@ isorted
 Table Of content
 ----------------
 
-`Installation`_ | `Usage`_  |  `Settings`_ | `Issues`_ | `Thanks`_ | `Changelog`_ | `Contributing`_ | `Authors`_
+`Installation`_ | `Usage`_  | `Settings`_ | `Key Bindings`_ | `Issues`_ | `Thanks`_ | `Changelog`_ | `Contributing`_ | `Authors`_
 
 
 Installation
@@ -65,7 +65,8 @@ See: https://pycqa.github.io/isort/docs/configuration/config_files.html
 
 Global settings
 ***************
-Preferences -> Package Settings -> isorted -> settings :
+
+Preferences -> Package Settings -> isorted -> Settings :
 
 
 isorted specifics options
@@ -104,6 +105,20 @@ A isorted subsettings is still possible:
   }
 
 
+Key Bindings
+------------
+
+Preferences -> Package Settings -> isorted -> Key Bindings :
+
+Copy to user key bindings, uncomment, edit keys and and save:
+
+.. code-block:: json
+
+  [
+      {"keys": ["ctrl+alt+s"], "command": "isort_file", "scope": "source.python"}
+  ]
+
+
 Issues
 ------
 
@@ -112,6 +127,7 @@ If there is something wrong with this plugin, `add an issue <https://github.com/
 
 Thanks
 ------
+
 This plugin is very inspired by `Sublime text isort plugin <https://github.com/thijsdezoete/sublime-text-isort-plugin>`_ and `Sublack <https://github.com/jgirardet/sublack>`_ Plugin. Thanks to Thijs de Zoute and Jimmy Girardet.
 
 

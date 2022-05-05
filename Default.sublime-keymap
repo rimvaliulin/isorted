@@ -1,6 +1,4 @@
 [
-    {
-        "keys": ["ctrl+alt+s"],
-        "command": "isort_file"
-    }
+    // isorted key binding
+    //{"keys": ["ctrl+alt+s"], "command": "isort_file", "scope": "source.python"}
 ]
