@@ -25,6 +25,10 @@ class IsortFileCommand(sublime_plugin.TextCommand):
 
     is_visible = is_enabled
 
+    def expand_command_variables(self, cmd):
+        cmd = os.path.expanduser(cmd)
+        return sublime.expand_variables(cmd, self.view.window().extract_variables())
+
     def get_command_line(self):
         """Get command line for isort."""
         try:
@@ -34,8 +38,11 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             msg = "'isort_command' not configured. Problem with settings?"
             sublime.error_message(msg)
             raise Exception(msg) from e
-        cmd = os.path.expanduser(cmd)
-        cmd = sublime.expand_variables(cmd, self.view.window().extract_variables())
+        if isinstance(cmd, list):
+            cmd = [self.expand_command_variables(c) for c in cmd]
+            cmd.append("-")  # set isort in input/ouput mode with -
+            return cmd
+        cmd = self.expand_command_variables(cmd)
         return [cmd, "-"]  # set isort in input/ouput mode with -
 
     def get_good_working_dir(self):
@@ -84,6 +91,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         try:
             p = subprocess.Popen(
                 cmd,
+                shell=isinstance(cmd, str) and " " in cmd,
                 cwd=self.get_good_working_dir(),
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
