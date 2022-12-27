@@ -1,4 +1,5 @@
 """isorted plugin."""
+import itertools
 import os
 import re
 import subprocess
@@ -7,13 +8,7 @@ import sublime
 import sublime_plugin
 
 encoding_re = re.compile(r"^[ \t\v]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)")
-
-
-def get_setting(self, name):
-    """Get plugin settings."""
-    defaults = sublime.load_settings("isorted.sublime-settings")
-    settings = self.view.settings().to_dict()
-    return settings.get(f"isorted.{name}", settings.get("isorted", {}).get(name, defaults.get(name)))
+name_re = re.compile(r"^(:?[a-z]{1,2}|[a-z][a-z_]+[a-z])$")
 
 
 class IsortFileCommand(sublime_plugin.TextCommand):
@@ -25,21 +20,69 @@ class IsortFileCommand(sublime_plugin.TextCommand):
 
     is_visible = is_enabled
 
+    def get_settings(self):
+        """Get plugin settings."""
+        # Get settings from plugin settings file
+        settings = sublime.load_settings("isorted.sublime-settings").to_dict()  # I know it's slow...
+        try:
+            # Get project settings
+            project_settings = self.view.window().project_data()["settings"]
+            for name, value in project_settings.items():
+                if name.startswith("isorted.") and len(name) > 8:
+                    settings[name[8:]] = value
+                elif name == "isorted":
+                    for k, v in value.items():
+                        settings[k] = v
+        except (AttributeError, KeyError):
+            pass
+        return settings
+
+    def get_options(self, settings):
+        """Get options."""
+        options = []
+        for name, value in settings.items():
+            if name in ("isort_command", "isort_on_save"):
+                continue
+            if not isinstance(name, str) or not name_re.match(name):
+                msg = "Settings names not properly configured. Problem with settings?"
+                sublime.error_message(msg)
+                raise Exception(msg)
+            # We only support long arguments, no single dash arguments
+            option = "--%s" % name.replace("_", "-")
+            if option and value:
+                if isinstance(value, bool) and value:
+                    options.append(option)
+                elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
+                    options.extend(itertools.product([option], map(str, value)))
+                elif isinstance(value, (str, int, float)):
+                    options.extend([option, str(value)])
+                else:
+                    msg = "Only boolean, strings, numbers and list of strings and numbers allowed. Problem with settings?"
+                    sublime.error_message(msg)
+                    raise Exception(msg)
+        return options
+
     def get_command_line(self):
         """Get command line for isort."""
+        settings = self.get_settings()
         try:
-            cmd = get_setting(self, "isort_command")
-            assert cmd
+            cmd = settings["isort_command"]
+            assert cmd and (isinstance(cmd, str) or isinstance(cmd, list) and all(isinstance(c, str) for c in cmd))
         except (KeyError, AssertionError) as e:
-            msg = "'isort_command' not configured. Problem with settings?"
+            msg = "'isort_command' not properly configured. Problem with settings?"
             sublime.error_message(msg)
             raise Exception(msg) from e
-        cmd = os.path.expanduser(cmd)
-        cmd = sublime.expand_variables(cmd, self.view.window().extract_variables())
-        return [cmd, "-"]  # set isort in input/ouput mode with -
+        if isinstance(cmd, str):
+            cmd = [cmd]
+        window_context = self.view.window().extract_variables()
+        cmd = [sublime.expand_variables(os.path.expanduser(c), window_context) for c in cmd]
+        options = self.get_options(settings)
+        cmd.extend(options)
+        cmd.append("-")  # set isort in input/ouput mode with -
+        return cmd
 
     def get_good_working_dir(self):
-        """Get good workin directory for isort."""
+        """Get good working directory for isort."""
         filename = self.view.file_name()
         if filename:
             return os.path.dirname(filename)
@@ -63,7 +106,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         return startup_info
 
     def get_encoding(self):
-        """Get current file encodign."""
+        """Get current file encoding."""
         region = self.view.line(sublime.Region(0))
         encoding = encoding_re.findall(self.view.substr(region))
         if encoding:
@@ -90,7 +133,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
                 stderr=subprocess.PIPE,
                 startupinfo=self.windows_popen_prepare(),
             )
-            out, err = p.communicate(input=this_contents.encode(encoding))
+            out, err = p.communicate(input=this_contents.encode(encoding), timeout=10)
         except (UnboundLocalError, OSError) as e:
             msg = "You may need to install isort and/or configure 'isort_command' in isorted's settings."
             sublime.error_message("%s: %s\n\n%s" % (e.__class__.__name__, e, msg))
@@ -110,6 +153,20 @@ class IsortedOnSave(sublime_plugin.ViewEventListener):
 
     def on_pre_save(self):
         """File on save callback."""
-        isort_on_save = get_setting(self, "isort_on_save")
-        if isort_on_save:
+        if self.isort_on_save:
             self.view.run_command("isort_file")
+
+    @property
+    def isort_on_save(self):
+        """Check isort_on_save setting."""
+        settings = self.view.settings()
+        try:
+            return bool(settings.get("isorted.isort_on_save"))
+        except KeyError:
+            pass
+        try:
+            return bool(settings.get("isorted")["isort_on_save"])
+        except KeyError:
+            pass
+        settings = sublime.load_settings("isorted.sublime-settings")
+        return bool(settings.get("isort_on_save"))
