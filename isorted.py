@@ -43,7 +43,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         for name, value in settings.items():
             if name in ("isort_command", "isort_on_save"):
                 continue
-            if not isinstance(name, str) or not name_re.match(name):
+            if not name_re.match(name):
                 msg = "Settings names not properly configured. Problem with settings?"
                 sublime.error_message(msg)
                 raise Exception(msg)
