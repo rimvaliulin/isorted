@@ -49,17 +49,16 @@ class IsortFileCommand(sublime_plugin.TextCommand):
                 raise Exception(msg)
             # We only support long arguments, no single dash arguments
             option = "--%s" % name.replace("_", "-")
-            if option and value:
-                if isinstance(value, bool) and value:
-                    options.append(option)
-                elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
-                    options.extend(itertools.product([option], map(str, value)))
-                elif isinstance(value, (str, int, float)):
-                    options.extend([option, str(value)])
-                else:
-                    msg = "Only boolean, strings, numbers and list of strings and numbers allowed. Problem with settings?"
-                    sublime.error_message(msg)
-                    raise Exception(msg)
+            if isinstance(value, bool) and value:
+                options.append(option)
+            elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
+                options.extend(itertools.product([option], map(str, value)))
+            elif isinstance(value, (str, int, float)):
+                options.extend([option, str(value)])
+            else:
+                msg = "Only boolean, strings, numbers and list of strings and numbers allowed. Problem with settings?"
+                sublime.error_message(msg)
+                raise Exception(msg)
         return options
 
     def get_command_line(self):
