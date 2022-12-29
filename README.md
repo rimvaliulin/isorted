@@ -12,7 +12,7 @@ isorted
 
 [`isort`](https://pycqa.github.io/isort/) integration for Sublime Text. Make your imports great again.
 
-Allows to use any external installed `isort` by your favorite package manager…
+Allows to use any externally installed `isort` by your favorite package manager…
 
 Installation
 ------------
@@ -32,7 +32,7 @@ Don't forget to install `isort` (>=19.3) (if you haven't already):
 Configuration
 -------------
 
-You can add any `isort` command line options to Sublime Text settings (see: `isort --help`). Change hyphens to underscores before proceed. This settings will be added directly to command line call and override any `isort` config.
+Add a `isort` command line options to Sublime Text settings (see: `isort --help`). Use long arguments (double dashed) and change hyphens to underscores to better look. This settings will be added directly to command line call and override any `isort` config file settings: `.isort.cfg`, `pyproject.toml`, `setup.cfg`, `tox.ini`, `.editorconfig` etc.
 
 
 ### Project settings
@@ -51,7 +51,7 @@ Just add `isorted` as prefix:
 }
 ```
 
-Or `isorted` subsettings is still possible:
+Or in `isorted` subsettings:
 
 ```json
 {
@@ -68,12 +68,26 @@ Or `isorted` subsettings is still possible:
 }
 ```
 
-### Globall settings
+### Global/User settings
 
 `Preferences` → `Package Settings` → `isorted` → `Settings`
 
+Fill user settings with options you like on the left panel:
 
-#### `isorted` specifics options
+```json
+{
+    "isort_command": "/usr/bin/local/isort",
+    "isort_on_save": true,
+    "options": {
+        "profile": "pycharm",
+        "multi_line": "GRID",
+        "ensure_newline_before_comments": true,
+        "known_local_folder": ["flask", "requests"]
+    }
+}
+```
+
+#### `isorted` specific options
 
 - `isort_command`: set custom location for `isort` command. Can be list of strings (by default: "isort").
 
@@ -98,11 +112,11 @@ Usage
 
 - Sort imports on save by `isort_on_save` settings.
 
+- Open `Command Panel` from menu or with `ctrl+shift+p` (Mac: `cmd+shift+p`) and select `isorted: Format file`.
+
 - Run `isort` on the current file with key bindings activated before:
 
   Press `ctrl+alt+s` (Mac: `cmd+alt+s`) to sort imports in the entire file.
-
-  You can also `ctrl+shift+p` (Mac: `cmd+shift+p`) and select `isorted: Format file`.
 
 
 Issues
@@ -114,7 +128,7 @@ If there is something wrong with this plugin, add an [issue](https://github.com/
 Thanks
 ------
 
-This plugin is very inspired by [Sublime text isort plugin](https://github.com/thijsdezoete/sublime-text-isort-plugin) and [sublack](https://github.com/jgirardet/sublack). Thanks to @thijsdezoete and @jgirardet.
+This plugin is inspired by [Sublime text isort plugin](https://github.com/thijsdezoete/sublime-text-isort-plugin) and [sublack](https://github.com/jgirardet/sublack). Thanks to @thijsdezoete and @jgirardet.
 
 
 Changelog

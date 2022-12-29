@@ -1,4 +1,5 @@
 {
-	"isort_command": "isort",
-	"isort_on_save": false
+    "isort_command": "isort",
+    "isort_on_save": false,
+    "options": {},
 }

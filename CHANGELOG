@@ -27,3 +27,6 @@ Changelog
     - Add flexible configs in sublime project and package settings that can be applied to the isort command.
     - Allow to start isort from poetry or virtual environment.
     - Make plugin default Python version 3.3 for compability with old ST.
+
+1.0.3
+    - Some bug fixes and visual improvements.
