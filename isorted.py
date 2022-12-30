@@ -137,7 +137,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             if isinstance(value, bool) and value:
                 options.append(option)
             elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
-                options.extend(itertools.product([option], map(str, value)))
+                options.extend(i for j in itertools.product([option], map(str, value)) for i in j)
             elif isinstance(value, (str, int, float)):
                 options.extend([option, str(value)])
             else:

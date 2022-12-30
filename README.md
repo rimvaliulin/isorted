@@ -17,7 +17,7 @@ Allows to use any externally installed `isort` by your favorite package managerâ
 Installation
 ------------
 
-In `Package Control` just find `isorted` or install manually by navigating to Sublime's `Packages` folder and cloning this repository
+In `Package Control` just find `isorted` or install manually by navigating to Sublime's `Packages` folder and cloning this repository:
 
 ```bash
 git clone https://github.com/rimvaliulin/isorted.git
