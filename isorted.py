@@ -113,9 +113,13 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         for name, value in self.view.window().project_data()["settings"].items():
             if name.startswith("isorted.") and len(name) > 8:
                 settings[name[8:]] = value
-            elif name == "isorted":
+            elif name == "isorted" and isinstance(value, dict):
                 for k, v in value.items():
-                    settings[k] = v
+                    if k == "options" and isinstance(v, dict):
+                        for k1, v1 in v.items():
+                            settings[k1] = v1
+                    else:
+                        settings[k] = v
         return settings
 
     def get_options(self, settings):

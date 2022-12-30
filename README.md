@@ -67,6 +67,24 @@ Or in `isorted` subsettings:
     }
 }
 ```
+Or in `options` section of `isorted` subsettings:
+
+```json
+{
+    "settings": {
+        "isorted": {
+            "isort_command": ["${python_interpreter}", "-m", "isort"],
+            "isort_on_save": true,
+            "options": {
+                "profile": "django",
+                "dont_float_to_top": true,
+                "indent": "    ",
+                "extra_builtin": ["django", "rest_framework"]
+            }
+        }
+    }
+}
+```
 
 ### Global/User settings
 

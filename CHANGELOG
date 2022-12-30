@@ -32,3 +32,4 @@ Changelog
     - Some bug fixes and visual improvements.
 1.0.4
     - Bug fixes: Remove caching.
+    - Add options sections to project settings
