@@ -114,7 +114,6 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         return startup_info
 
     @property
-    @cache
     def settings(self):
         """Get settings."""
         settings = {}
@@ -136,7 +135,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
     def options(self):
         """Get command line options."""
         options = []
-        for name, value in self.settings.items():
+        for name, value in self.settings.get("options", {}).items():
             if name in self.plugin_options:
                 continue
             if not option_name_re.match(name):
@@ -148,7 +147,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             if isinstance(value, bool) and value:
                 options.append(option)
             elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
-                options.extend(itertools.product([option], map(str, value)))
+                options.extend([optvar for optvars in itertools.product([option], map(str, value)) for optvar in optvars])
             elif isinstance(value, (str, int, float)):
                 options.extend([option, str(value)])
             else:
