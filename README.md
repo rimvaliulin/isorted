@@ -23,10 +23,10 @@ In `Package Control` just find `isorted` or install manually by navigating to Su
 git clone https://github.com/rimvaliulin/isorted.git
 ```
 
-Don't forget to install `isort` (>=19.3) (if you haven't already):
+Install `isort` if you haven't already:
 
 ```bash
-  pip3 install isort # Requires python 3.6
+  pip3 install isort
 ```
 
 Configuration
@@ -158,9 +158,9 @@ see [CHANGELOG](CHANGELOG)
 Contributing
 ------------
 
-- Remove `isorted` via Package Control.
+- Remove `isorted` via `Package Control`.
 - Fork `isorted`
-- Clone your `isorted` fork to your Packages folder (`Preferences` → `Browse Packages`…).
+- Clone your `isorted` fork to your `Packages` folder (`Preferences` → `Browse Packages`…).
 - Add your name to Authors in the readme.
 
 
