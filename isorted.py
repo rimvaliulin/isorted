@@ -11,21 +11,6 @@ encoding_re = re.compile(r"^[ \t\v]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)")
 option_name_re = re.compile(r"^(:?[a-z]{1,2}|[a-z][a-z_-]+[a-z])$")
 
 
-def cache(f):
-    """Cache property."""
-
-    def wrapper(self):
-        name = "_%s" % f.__name__
-        try:
-            return getattr(self, name)
-        except AttributeError:
-            value = f(self)
-            setattr(self, name, value)
-            return value
-
-    return wrapper
-
-
 class IsortFileCommand(sublime_plugin.TextCommand):
     """isort_file command class."""
 
@@ -41,6 +26,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         """Run plugin."""
         positions = list(self.view.sel())
         content = self.view.substr(sublime.Region(0, self.view.size()))
+        encoding = self.encoding
 
         try:
             proc = subprocess.Popen(
@@ -51,7 +37,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
                 stderr=subprocess.PIPE,
                 startupinfo=self.startup_info,
             )
-            out, err = proc.communicate(input=content.encode(self.encoding), timeout=10)
+            out, err = proc.communicate(input=content.encode(encoding), timeout=10)
         except subprocess.TimeoutExpired:
             proc.kill()
         except (UnboundLocalError, OSError) as e:
@@ -60,10 +46,10 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             raise Exception(msg)
 
         if proc.returncode or err:
-            sublime.error_message("isort: %s" % err.decode(self.encoding).split("isort: error: ")[-1:][0])
+            sublime.error_message("isort: %s" % err.decode(encoding).split("isort: error: ")[-1:][0])
             return
 
-        self.view.replace(edit, sublime.Region(0, self.view.size()), out.decode(self.encoding))
+        self.view.replace(edit, sublime.Region(0, self.view.size()), out.decode(encoding))
         # Our selection has moved now...
         remove_selection = self.view.sel()[0]
         self.view.sel().subtract(remove_selection)
@@ -73,8 +59,9 @@ class IsortFileCommand(sublime_plugin.TextCommand):
     @property
     def command_line(self):
         """Get command line."""
+        settings = self.settings
         try:
-            cmd = self.settings["isort_command"]
+            cmd = settings["isort_command"]
             assert cmd and (isinstance(cmd, str) or isinstance(cmd, list) and all(isinstance(c, str) for c in cmd))
         except (KeyError, AssertionError) as e:
             msg = "isorted: 'isort_command' not properly configured. Problem with settings?"
@@ -84,7 +71,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             cmd = [cmd]
         window_context = self.view.window().extract_variables()
         cmd = [sublime.expand_variables(os.path.expanduser(c), window_context) for c in cmd]
-        cmd.extend(self.options)
+        cmd.extend(self.get_options(settings))
         cmd.append("-")  # set isort in input/ouput mode with -
         return cmd
 
@@ -114,7 +101,6 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         return startup_info
 
     @property
-    @cache
     def settings(self):
         """Get settings."""
         settings = {}
@@ -132,11 +118,10 @@ class IsortFileCommand(sublime_plugin.TextCommand):
                     settings[k] = v
         return settings
 
-    @property
-    def options(self):
+    def get_options(self, settings):
         """Get command line options."""
         options = []
-        for name, value in self.settings.items():
+        for name, value in settings.items():
             if name in self.plugin_options:
                 continue
             if not option_name_re.match(name):
@@ -158,7 +143,6 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         return options
 
     @property
-    @cache
     def encoding(self):
         """Get current file encoding."""
         encoding = self.view.encoding()
@@ -192,6 +176,6 @@ class IsortedOnSave(sublime_plugin.ViewEventListener):
         settings = self.view.settings()
         return bool(
             settings.get("isorted.isort_on_save")
-            or settings.get("isorted").get("isort_on_save", False)
+            or settings.get("isorted", {}).get("isort_on_save", False)
             or sublime.load_settings("isorted.sublime-settings").get("isort_on_save")
         )

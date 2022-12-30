@@ -30,3 +30,5 @@ Changelog
 
 1.0.3
     - Some bug fixes and visual improvements.
+1.0.4
+    - Bug fixes: Remove caching.
