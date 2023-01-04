@@ -17,7 +17,7 @@ Allows to use any externally installed `isort` by your favorite package managerâ
 Installation
 ------------
 
-In `Package Control` just find `isorted` or install manually by navigating to Sublime's `Packages` folder and cloning this repository:
+Just find `isorted` in `Package Control` or install manually by navigating to Sublime's `Packages` folder and cloning this repository:
 
 ```bash
 git clone https://github.com/rimvaliulin/isorted.git
@@ -32,10 +32,13 @@ Install `isort` if you haven't already:
 Configuration
 -------------
 
-Add a `isort` command line options to Sublime Text settings (see: `isort --help`). Use long arguments (double dashed) and change hyphens to underscores to better look. This settings will be added directly to command line call and override any `isort` config file settings: `.isort.cfg`, `pyproject.toml`, `setup.cfg`, `tox.ini`, `.editorconfig` etc.
+### `isort` config files
 
+`isort` looks for the closest supported config files in the order listed: `.isort.cfg`, `pyproject.toml`, `setup.cfg`, `tox.ini` and `.editorconfig` (`.isort.cfg` and `pyproject.toml` are preferred formats). `isort` will traverse up to 25 parent directories until it finds a suitable config file. `isort` will not leave a git or Mercurial repository (checking for a .git or .hg directory). As soon as it finds a file, it stops looking. The config file search is done relative to the current directory if `isort` or a file stream is passed in, or relative to the first path passed in if multiple paths are passed in. `isort` never merges config files together due to the confusion it can cause. You can manually specify the settings file or path by setting `--settings-path` from the command-line. See more: https://pycqa.github.io/isort/docs/configuration/config_files.html
 
 ### Project settings
+
+Add a `isort` command line options to Sublime Text settings (see: `isort --help`). Use long arguments (double dashed) and change hyphens to underscores to better look. This settings will be added directly to command line call and override any `isort` config file settings: `.isort.cfg`, `pyproject.toml`, `setup.cfg`, `tox.ini`, `.editorconfig` etc.
 
 Just add `isorted` as prefix:
 
@@ -167,14 +170,16 @@ Contributing
 Authors
 -------
 
-Coded by Rim Valiulin
+Coded by Rim Valiulin @rimvaliulin.
 
-Contributions: â€¦
+Contributions: Stanley Chung @returnchung.
 
 Todo
 ----
 
 - MacOS: Fix error 'You may need to install isort and/or configure 'isort_command' in isorted's settings.' on new Sublime Text startup after reboot (needs Sublime Text restart).
+
+- Add quick toggle `isort_on_save` for specific file.
 
 ---
 

@@ -110,7 +110,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             settings[name] = plugin_settings.get(name)
         settings.update(plugin_settings.get("options"))
         # Get project settings
-        for name, value in self.view.window().project_data()["settings"].items():
+        for name, value in self.view.window().project_data().get("settings", {}).items():
             if name.startswith("isorted.") and len(name) > 8:
                 settings[name[8:]] = value
             elif name == "isorted" and isinstance(value, dict):
@@ -153,9 +153,8 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         if encoding == "Undefined":
             encoding = sublime.load_settings("Preferences.sublime-settings").get("default_encoding")
         if not encoding:
-            region = self.view.line(sublime.Region(0))
-            for shift in range(1):
-                region = self.view.line(region.end() + shift)
+            for row in range(1):
+                region = self.view.line(self.view.text_point(row, 0))
                 encoding = encoding_re.findall(self.view.substr(region))
                 if encoding:
                     encoding = encoding[0]
