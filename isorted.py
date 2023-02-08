@@ -49,7 +49,9 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             sublime.error_message("isort: %s" % err.decode(encoding).split("isort: error: ")[-1:][0])
             return
 
-        self.view.replace(edit, sublime.Region(0, self.view.size()), out.decode(encoding))
+        # convert to universal newlines as Sublime Text uses that internally
+        out_ = out.decode(encoding).replace('\r\n', '\n').replace('\r', '\n')
+        self.view.replace(edit, sublime.Region(0, self.view.size()), out_)
         # Our selection has moved now...
         remove_selection = self.view.sel()[0]
         self.view.sel().subtract(remove_selection)
