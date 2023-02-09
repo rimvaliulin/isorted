@@ -72,6 +72,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
         window_context = self.view.window().extract_variables()
         cmd = [sublime.expand_variables(os.path.expanduser(c), window_context) for c in cmd]
         cmd.extend(self.get_options(settings))
+        cmd.extend(("--line-ending", "\n"))  # force unix line endings as ST always use \n in views
         cmd.append("-")  # set isort in input/ouput mode with -
         return cmd
 

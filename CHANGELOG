@@ -40,3 +40,6 @@ Changelog
 
 1.0.6
     - Bug fixes: Handle absent project settings
+
+1.0.7
+    - Bug fixes: Force isort use unix line endings as ST always use \n in views
