@@ -43,3 +43,6 @@ Changelog
 
 1.0.7
     - Bug fixes: Force isort use unix line endings as ST always use \n in views
+
+1.0.8
+    - Bug fixes: Allow work without an open project

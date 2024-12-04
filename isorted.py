@@ -111,16 +111,18 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             settings[name] = plugin_settings.get(name)
         settings.update(plugin_settings.get("options"))
         # Get project settings
-        for name, value in self.view.window().project_data().get("settings", {}).items():
-            if name.startswith("isorted.") and len(name) > 8:
-                settings[name[8:]] = value
-            elif name == "isorted" and isinstance(value, dict):
-                for k, v in value.items():
-                    if k == "options" and isinstance(v, dict):
-                        for k1, v1 in v.items():
-                            settings[k1] = v1
-                    else:
-                        settings[k] = v
+        project_data = self.view.window().project_data()
+        if project_data:
+            for name, value in project_data.get("settings", {}).items():
+                if name.startswith("isorted.") and len(name) > 8:
+                    settings[name[8:]] = value
+                elif name == "isorted" and isinstance(value, dict):
+                    for k, v in value.items():
+                        if k == "options" and isinstance(v, dict):
+                            for k1, v1 in v.items():
+                                settings[k1] = v1
+                        else:
+                            settings[k] = v
         return settings
 
     def get_options(self, settings):
