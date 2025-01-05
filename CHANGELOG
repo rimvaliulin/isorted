@@ -46,3 +46,6 @@ Changelog
 
 1.0.8
     - Bug fixes: Allow work without an open project
+
+1.0.9
+    - Bug fixes: Force to use internal unix newlines in windows
