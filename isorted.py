@@ -40,6 +40,7 @@ class IsortFileCommand(sublime_plugin.TextCommand):
             out, err = proc.communicate(input=content.encode(encoding), timeout=10)
         except subprocess.TimeoutExpired:
             proc.kill()
+            return
         except (UnboundLocalError, OSError) as e:
             msg = "isorted: You may need to install isort and/or configure 'isort_command' in isorted's settings."
             sublime.error_message("%s: %s\n\n%s" % (e.__class__.__name__, e, msg))
